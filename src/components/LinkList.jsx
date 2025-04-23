@@ -2,21 +2,7 @@
 import { useLinks } from '../context/LinksContext';
 
 const LinkList = () => {
-  const { links, removeLink, setFilter } = useLinks();
-
-  // Función para copiar al portapapeles
-  const copyToClipboard = (link) => {
-    navigator.clipboard.writeText(link).then(() => {
-      alert("Link copiado al portapapeles!");
-    });
-  };
-
-  // Función para compartir en WhatsApp
-  const shareOnWhatsApp = (link) => {
-    const message = `Mira este link: ${link}`;
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank");
-  };
+  const { links, removeLink, setFilter, categories, removeCategory } = useLinks();
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value); // Cambiar el filtro según la categoría seleccionada
@@ -29,12 +15,21 @@ const LinkList = () => {
       {/* Filtro de Categoría */}
       <select onChange={handleFilterChange}>
         <option value="Todos">Todos</option>
-        <option value="Videos">Videos</option>
-        <option value="Noticias">Noticias</option>
-        <option value="Redes Sociales">Redes Sociales</option>
-        <option value="Educación">Educación</option>
-        <option value="Otros">Otros</option>
+        {categories.map((category, index) => (
+          <option key={index} value={category}>{category}</option>
+        ))}
       </select>
+
+      {/* Eliminar Categoría */}
+      <h3>Categorías</h3>
+      <ul>
+        {categories.map((category, index) => (
+          <li key={index}>
+            {category} 
+            <button onClick={() => removeCategory(category)}>Eliminar</button>
+          </li>
+        ))}
+      </ul>
 
       <ul>
         {links.length === 0 ? (
@@ -48,13 +43,6 @@ const LinkList = () => {
                 {link.link}
               </a>
               <div>
-                {/* Botón para copiar al portapapeles */}
-                <button onClick={() => copyToClipboard(link.link)}>Copiar Link</button>
-
-                {/* Botón para compartir en WhatsApp */}
-                <button onClick={() => shareOnWhatsApp(link.link)}>Compartir en WhatsApp</button>
-
-                {/* Botón para eliminar */}
                 <button onClick={() => removeLink(index)}>Eliminar</button>
               </div>
             </li>

@@ -3,30 +3,28 @@ import { useState } from 'react';
 import { useLinks } from '../context/LinksContext';
 
 const LinkForm = () => {
-  const { addLink } = useLinks();
+  const { addLink, categories, addCategory } = useLinks();
   const [link, setLink] = useState('');
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
-  const [suggestedTitle, setSuggestedTitle] = useState('');
-
-  // Función para sugerir un título basado en el link
-  const suggestTitle = (url) => {
-    try {
-      const domain = new URL(url).hostname.replace('www.', '');
-      return domain.split('.')[0];  // Extrae el dominio como título sugerido
-    } catch (error) {
-      return '';
-    }
-  };
+  const [newCategory, setNewCategory] = useState('');  // Para la nueva categoría
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (link) {
-      addLink(link, title || suggestedTitle, category);
+    if (link && category) {
+      addLink(link, title || 'Sin título', category);
       setLink('');
       setTitle('');
       setCategory('');
-      setSuggestedTitle('');
+    }
+  };
+
+  const handleAddCategory = () => {
+    if (newCategory) {
+      addCategory(newCategory);
+      setNewCategory('');  // Limpiar el campo de nueva categoría
+    } else {
+      alert("Por favor ingresa una categoría.");
     }
   };
 
@@ -35,11 +33,7 @@ const LinkForm = () => {
       <input
         type="url"
         value={link}
-        onChange={(e) => {
-          const url = e.target.value;
-          setLink(url);
-          setSuggestedTitle(suggestTitle(url));  // Actualiza el título sugerido
-        }}
+        onChange={(e) => setLink(e.target.value)}
         placeholder="Agrega un link"
         required
       />
@@ -47,20 +41,27 @@ const LinkForm = () => {
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder={suggestedTitle || 'Título del link'}
+        placeholder="Título del link"
       />
-      <select
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        required
-      >
+      {/* Seleccionar categoría */}
+      <select value={category} onChange={(e) => setCategory(e.target.value)} required>
         <option value="">Selecciona una categoría</option>
-        <option value="Redes Sociales">Redes Sociales</option>
-        <option value="Videos">Videos</option>
-        <option value="Noticias">Noticias</option>
-        <option value="Educación">Educación</option>
-        <option value="Otros">Otros</option>
+        {categories.map((category, index) => (
+          <option key={index} value={category}>{category}</option>
+        ))}
       </select>
+
+      {/* Opción para agregar una nueva categoría */}
+      <div>
+        <input
+          type="text"
+          value={newCategory}
+          onChange={(e) => setNewCategory(e.target.value)}
+          placeholder="Nueva categoría"
+        />
+        <button type="button" onClick={handleAddCategory}>Agregar Categoría</button>
+      </div>
+
       <button type="submit">Agregar Link</button>
     </form>
   );
