@@ -4,6 +4,20 @@ import { useLinks } from '../context/LinksContext';
 const LinkList = () => {
   const { links, removeLink, setFilter } = useLinks();
 
+  // Función para copiar al portapapeles
+  const copyToClipboard = (link) => {
+    navigator.clipboard.writeText(link).then(() => {
+      alert("Link copiado al portapapeles!");
+    });
+  };
+
+  // Función para compartir en WhatsApp
+  const shareOnWhatsApp = (link) => {
+    const message = `Mira este link: ${link}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
+  };
+
   const handleFilterChange = (e) => {
     setFilter(e.target.value); // Cambiar el filtro según la categoría seleccionada
   };
@@ -33,7 +47,16 @@ const LinkList = () => {
               <a href={link.link} target="_blank" rel="noopener noreferrer">
                 {link.link}
               </a>
-              <button onClick={() => removeLink(index)}>Eliminar</button>
+              <div>
+                {/* Botón para copiar al portapapeles */}
+                <button onClick={() => copyToClipboard(link.link)}>Copiar Link</button>
+
+                {/* Botón para compartir en WhatsApp */}
+                <button onClick={() => shareOnWhatsApp(link.link)}>Compartir en WhatsApp</button>
+
+                {/* Botón para eliminar */}
+                <button onClick={() => removeLink(index)}>Eliminar</button>
+              </div>
             </li>
           ))
         )}
