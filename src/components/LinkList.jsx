@@ -10,8 +10,10 @@ const LinkList = () => {
       <ul>
         {links.map((link, index) => (
           <li key={index}>
-            <a href={link} target="_blank" rel="noopener noreferrer">
-              {link}
+            <h3>{link.title}</h3>
+            <p>Categoría: {link.category}</p>
+            <a href={link.link} target="_blank" rel="noopener noreferrer">
+              {link.link}
             </a>
             <button onClick={() => removeLink(index)}>Eliminar</button>
           </li>

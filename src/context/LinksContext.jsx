@@ -1,5 +1,5 @@
 // src/context/LinksContext.jsx
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 
 // Crear el contexto
 const LinksContext = createContext();
@@ -8,9 +8,24 @@ const LinksContext = createContext();
 export const LinksProvider = ({ children }) => {
   const [links, setLinks] = useState([]);
 
+  // Cargar los links del localStorage al iniciar la aplicación
+  useEffect(() => {
+    // Intenta cargar los datos desde localStorage
+    const storedLinks = JSON.parse(localStorage.getItem('links')) || [];
+    setLinks(storedLinks);
+  }, []);
+
+  // Guardar los links en localStorage cada vez que cambien
+  useEffect(() => {
+    if (links.length > 0) {
+      localStorage.setItem('links', JSON.stringify(links));  // Guarda los links en localStorage
+    }
+  }, [links]);
+
   // Función para agregar un nuevo link
-  const addLink = (link) => {
-    setLinks((prevLinks) => [...prevLinks, link]);
+  const addLink = (link, title, category) => {
+    const newLink = { link, title, category };
+    setLinks((prevLinks) => [...prevLinks, newLink]);
   };
 
   // Función para eliminar un link
