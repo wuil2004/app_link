@@ -7,7 +7,7 @@ const App = () => {
   return (
     <LinksProvider>
       <div>
-        <h1>SaveLink's</h1>
+        <h1>Aplicación de Links Compartidos</h1>
         <LinkForm />
         <LinkList />
       </div>

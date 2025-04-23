@@ -7,10 +7,10 @@ const LinksContext = createContext();
 // Crear el provider
 export const LinksProvider = ({ children }) => {
   const [links, setLinks] = useState([]);
+  const [filter, setFilter] = useState('Todos'); // Filtro de categoría
 
   // Cargar los links del localStorage al iniciar la aplicación
   useEffect(() => {
-    // Intenta cargar los datos desde localStorage
     const storedLinks = JSON.parse(localStorage.getItem('links')) || [];
     setLinks(storedLinks);
   }, []);
@@ -33,8 +33,11 @@ export const LinksProvider = ({ children }) => {
     setLinks((prevLinks) => prevLinks.filter((_, i) => i !== index));
   };
 
+  // Filtrar los links según la categoría
+  const filteredLinks = filter === 'Todos' ? links : links.filter(link => link.category === filter);
+
   return (
-    <LinksContext.Provider value={{ links, addLink, removeLink }}>
+    <LinksContext.Provider value={{ links: filteredLinks, addLink, removeLink, setFilter }}>
       {children}
     </LinksContext.Provider>
   );
